@@ -1,6 +1,7 @@
 import React from 'react'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { Tabs } from 'expo-router'
+import CUSTOM_COLORS from '@/constants/colors'
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(
@@ -14,19 +15,32 @@ function TabBarIcon(
 
 export default function TabLayout() {
   return (
-    <Tabs>
+    <Tabs
+      sceneContainerStyle={{ backgroundColor: CUSTOM_COLORS.background }}
+      screenOptions={{
+        headerShown: true,
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          color: CUSTOM_COLORS.text,
+        },
+        headerStyle: {
+          backgroundColor: CUSTOM_COLORS.backgroundCard,
+        },
+        tabBarStyle: {
+          backgroundColor: CUSTOM_COLORS.backgroundCard,
+        },
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="budget"
         options={{
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Budget',
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="expense"
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Expense',
         }}
       />
     </Tabs>
