@@ -3,7 +3,7 @@ import tailwindConfig from '../tailwind.config'
 type TCustomColors = {
   accent: string
   background: string
-  backgroundCard: string
+  backgroundDimmed3: string
   primary: string
   secondary: string
   text: string
