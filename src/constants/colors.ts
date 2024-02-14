@@ -1,4 +1,4 @@
-import tailwindConfig from '../tailwind.config'
+import tailwindConfig from '../../tailwind.config'
 
 type TCustomColors = {
   accent: string

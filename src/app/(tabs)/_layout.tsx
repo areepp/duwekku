@@ -35,10 +35,10 @@ export default function TabLayout() {
           height: 50,
         },
         tabBarLabelStyle: {
-          marginBottom: 4,
+          marginBottom: 3,
         },
         tabBarIconStyle: {
-          marginTop: 4,
+          marginTop: 3,
         },
         tabBarActiveTintColor: CUSTOM_COLORS.accent,
         tabBarInactiveTintColor: tailwindColors.zinc['700'],
