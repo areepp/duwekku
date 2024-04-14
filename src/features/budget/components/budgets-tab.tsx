@@ -1,7 +1,15 @@
 import CustomText from '@/components/custom-text'
-import { useBudgetsAtom } from '@/state/budget'
+import { TBudget, useBudgetsAtom } from '@/state/budget'
 import { FlatList, View } from 'react-native'
 import AddBudgetSheet from './add-budget-sheet'
+
+const BudgetItem = ({ item }: { item: TBudget }) => {
+  return (
+    <View className="bg-backgroundDimmed3 p-6 rounded-xl">
+      <CustomText>{item.name}</CustomText>
+    </View>
+  )
+}
 
 const BudgetsTab = () => {
   const [budgets] = useBudgetsAtom()
@@ -11,11 +19,7 @@ const BudgetsTab = () => {
       <FlatList
         data={budgets}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View className="bg-backgroundDimmed3 p-6">
-            <CustomText>{item.name}</CustomText>
-          </View>
-        )}
+        renderItem={({ item }) => <BudgetItem item={item} />}
         contentContainerStyle={{
           gap: 6,
         }}

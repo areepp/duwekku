@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-type TBudget = {
+export type TBudget = {
   id: string
   name: string
 }
