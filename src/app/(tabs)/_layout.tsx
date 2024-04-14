@@ -46,9 +46,9 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="budget"
+        name="budgets"
         options={{
-          title: 'Budget',
+          title: 'Budgets',
           tabBarIcon: ({ focused }) => (
             <Iconify
               icon="iconoir:wallet"

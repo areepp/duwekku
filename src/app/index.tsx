@@ -1,7 +1,7 @@
 import { Redirect } from 'expo-router'
 
 const Page = () => {
-  return <Redirect href="/(tabs)/budget" />
+  return <Redirect href="/(tabs)/budgets" />
 }
 
 export default Page
