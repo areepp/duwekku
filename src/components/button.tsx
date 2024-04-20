@@ -1,15 +1,42 @@
 import { TouchableOpacity, TouchableOpacityProps } from 'react-native'
-import CustomText from './custom-text'
+import CustomText, { TCustomTextVariant } from './custom-text'
+import clsx from 'clsx'
 
-type ButtonProps = { text: string } & Pick<TouchableOpacityProps, 'onPress'>
+type TButtonVariant = 'background' | 'accent'
 
-const Button = ({ text, onPress }: ButtonProps) => {
+type ButtonProps = {
+  text: string
+  customClassName?: string
+  variant?: TButtonVariant
+} & Pick<TouchableOpacityProps, 'onPress'>
+
+const CustomTextVariantMapper: Record<TButtonVariant, TCustomTextVariant> = {
+  accent: 'background',
+  background: 'accent',
+}
+
+const Button = ({
+  text,
+  onPress,
+  customClassName,
+  variant = 'background',
+}: ButtonProps) => {
   return (
     <TouchableOpacity
-      className="self-center border border-accent rounded-lg p-3"
+      className={clsx(
+        'self-center border rounded-lg p-3 border-accent',
+        variant === 'background' && 'bg-background ',
+        variant === 'accent' && 'bg-accent',
+        customClassName,
+      )}
       onPress={onPress}
     >
-      <CustomText variant="accent">{text}</CustomText>
+      <CustomText
+        variant={CustomTextVariantMapper[variant]}
+        customClassName="text-center font-medium"
+      >
+        {text}
+      </CustomText>
     </TouchableOpacity>
   )
 }
