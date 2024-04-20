@@ -20,15 +20,7 @@ export default function TabLayout() {
     <Tabs
       sceneContainerStyle={{ backgroundColor: CUSTOM_COLORS.background }}
       screenOptions={{
-        headerShown: true,
-        headerTitleAlign: 'center',
-        headerTitleStyle: {
-          color: CUSTOM_COLORS.text,
-        },
-        headerStyle: {
-          backgroundColor: CUSTOM_COLORS.backgroundDimmed3,
-          borderColor: CUSTOM_COLORS.accent,
-        },
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: CUSTOM_COLORS.backgroundDimmed3,
           borderColor: CUSTOM_COLORS.accent,
@@ -42,7 +34,6 @@ export default function TabLayout() {
         },
         tabBarActiveTintColor: CUSTOM_COLORS.accent,
         tabBarInactiveTintColor: tailwindColors.zinc['700'],
-        headerTintColor: CUSTOM_COLORS.text,
       }}
     >
       <Tabs.Screen

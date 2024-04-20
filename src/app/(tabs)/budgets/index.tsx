@@ -1,10 +1,7 @@
-import {  BudgetsTab } from '@/features/budget'
+import { BudgetsTab } from '@/features/budget'
 
-const BudgetPage = () => {
-
-  return (
-    <BudgetsTab />
-  )
+const BudgetsTabIndex = () => {
+  return <BudgetsTab />
 }
 
-export default BudgetPage
+export default BudgetsTabIndex

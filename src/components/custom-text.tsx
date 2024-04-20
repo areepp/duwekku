@@ -1,16 +1,18 @@
 import clsx from 'clsx'
 import { Text } from 'react-native'
 
-type TVariant = 'default' | 'accent'
+export type TCustomTextVariant = 'default' | 'accent' | 'background'
+
 type CustomTextProps = {
-  variant?: TVariant
-  children: string
+  variant?: TCustomTextVariant
+  children: string | string[]
   customClassName?: string
 }
 
-const variantMapper: Record<TVariant, string> = {
+const variantMapper: Record<TCustomTextVariant, string> = {
   default: 'text-text',
   accent: 'text-accent',
+  background: 'text-background',
 }
 
 const CustomText = ({

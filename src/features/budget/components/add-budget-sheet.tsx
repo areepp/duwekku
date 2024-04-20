@@ -38,6 +38,7 @@ const AddBudgetSheet = () => {
             label="Budget name"
             value={newBudgetName}
             onChangeText={setNewBudgetName}
+            placeholder="Enter name"
           />
           <Button
             onPress={() => {
