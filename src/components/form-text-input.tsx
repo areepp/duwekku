@@ -10,7 +10,10 @@ type FormTextInputProps = TextInputProps & {
 }
 
 const FormTextInput = forwardRef<TextInput, FormTextInputProps>(
-  ({ onChangeText, value, placeholder, customClassName, label }, ref) => {
+  (
+    { onChangeText, value, placeholder, customClassName, label, keyboardType },
+    ref,
+  ) => {
     return (
       <View
         className={clsx(
@@ -30,6 +33,7 @@ const FormTextInput = forwardRef<TextInput, FormTextInputProps>(
           value={value}
           placeholder={placeholder}
           placeholderTextColor={colors.zinc[700]}
+          keyboardType={keyboardType}
           className="text-text flex-1"
         />
       </View>

@@ -42,10 +42,13 @@ const AddBudgetSheet = () => {
           />
           <Button
             onPress={() => {
-              setBudgets((prev) => [
-                ...prev,
-                { id: uuid.v4() as string, name: newBudgetName },
-              ])
+              setBudgets((draft) => {
+                draft.push({
+                  id: uuid.v4() as string,
+                  name: newBudgetName,
+                  transactions: [],
+                })
+              })
               setNewBudgetName('')
               bottomSheetRef.current?.close()
             }}
