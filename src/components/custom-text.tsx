@@ -6,6 +6,7 @@ export type TCustomTextVariant =
   | 'accent'
   | 'background'
   | 'secondary'
+  | 'subtle'
 
 type TCustomTextProps = {
   variant?: TCustomTextVariant
@@ -18,6 +19,7 @@ const variantMapper: Record<TCustomTextVariant, string> = {
   accent: 'text-accent',
   background: 'text-background',
   secondary: 'text-secondary',
+  subtle: 'text-slate-500',
 }
 
 const CustomText = ({
