@@ -6,6 +6,7 @@ import { FlatList, View } from 'react-native'
 import { useLocalSearchParams } from 'expo-router'
 import { Swipeable } from 'react-native-gesture-handler'
 import { TouchableOpacity } from '@gorhom/bottom-sheet'
+import clsx from 'clsx'
 
 const parseTransactionAmount = ({
   type,
@@ -48,6 +49,17 @@ const RightActions = ({ item }: { item: TTransaction }) => {
     })
   }
 
+  const handleTransactionPaid = () => {
+    setBudgets((draft) => {
+      const transactionIndex = draft[currentBudgetIndex].transactions.findIndex(
+        (transaction) => transaction.id === item.id,
+      )
+      if (transactionIndex !== -1)
+        draft[currentBudgetIndex].transactions[transactionIndex].is_paid =
+          !item.is_paid
+    })
+  }
+
   return (
     <View className="flex flex-row gap-6 px-3">
       <TouchableOpacity className="flex items-center justify-center">
@@ -56,13 +68,24 @@ const RightActions = ({ item }: { item: TTransaction }) => {
         </View>
         <CustomText variant="accent">Copy</CustomText>
       </TouchableOpacity>
-      <TouchableOpacity className="flex items-center justify-center">
+      <TouchableOpacity
+        className="flex items-center justify-center"
+        onPress={handleTransactionPaid}
+      >
         <View className="mx-auto">
-          <Iconify
-            icon="ph:rectangle-bold"
-            size={24}
-            color={CUSTOM_COLORS.accent}
-          />
+          {item.is_paid ? (
+            <Iconify
+              icon="ph:check-square-bold"
+              size={24}
+              color={CUSTOM_COLORS.accent}
+            />
+          ) : (
+            <Iconify
+              icon="ph:square-bold"
+              size={24}
+              color={CUSTOM_COLORS.accent}
+            />
+          )}
         </View>
         <CustomText variant="accent">Paid</CustomText>
       </TouchableOpacity>
@@ -111,10 +134,22 @@ const TransactionItem = ({ item }: { item: TTransaction }) => {
     >
       <View className="bg-backgroundDimmed3 rounded-xl flex flex-row items-center">
         <View className="flex-1 p-5 flex justify-between flex-row">
-          <CustomText>{item.name}</CustomText>
+          <CustomText
+            variant={item.is_paid ? 'subtle' : undefined}
+            customClassName={clsx(item.is_paid && 'line-through')}
+          >
+            {item.name}
+          </CustomText>
           <View className="flex flex-row items-center">
             <CustomText
-              variant={item.type === 'expense' ? 'secondary' : 'default'}
+              variant={
+                item.is_paid
+                  ? 'subtle'
+                  : item.type === 'expense'
+                  ? 'secondary'
+                  : 'default'
+              }
+              customClassName={clsx(item.is_paid && 'line-through')}
             >
               {parseTransactionAmount({ amount: item.amount, type: item.type })}
             </CustomText>
