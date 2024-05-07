@@ -8,6 +8,8 @@ export type TTransaction = {
   amount: number
   type: 'income' | 'expense'
   created_at: string
+  is_starred: boolean
+  is_paid: boolean
 }
 
 export type TBudget = {

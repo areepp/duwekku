@@ -78,6 +78,8 @@ const AddBudgetIncomeAndExpense = () => {
                     amount: Number(amount),
                     created_at: new Date().toLocaleDateString(),
                     type: actionType,
+                    is_starred: false,
+                    is_paid: false,
                   }
                   draft[index].transactions.push(newTransaction)
                 }
