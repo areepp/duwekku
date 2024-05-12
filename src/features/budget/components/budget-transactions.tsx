@@ -61,13 +61,7 @@ const RightActions = ({ item }: { item: TTransaction }) => {
   }
 
   return (
-    <View className="flex flex-row gap-6 px-3">
-      <TouchableOpacity className="flex items-center justify-center">
-        <View className="mx-auto">
-          <Iconify icon="ph:copy" size={24} color={CUSTOM_COLORS.accent} />
-        </View>
-        <CustomText variant="accent">Copy</CustomText>
-      </TouchableOpacity>
+    <View className="flex flex-row gap-6 px-3 items-center justify-center">
       <TouchableOpacity
         className="flex items-center justify-center"
         onPress={handleTransactionPaid}
