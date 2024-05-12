@@ -7,6 +7,7 @@ import { useLocalSearchParams } from 'expo-router'
 import { Swipeable } from 'react-native-gesture-handler'
 import { TouchableOpacity } from '@gorhom/bottom-sheet'
 import clsx from 'clsx'
+import { useRef } from 'react'
 
 const parseTransactionAmount = ({
   type,
@@ -23,7 +24,13 @@ const parseTransactionAmount = ({
   return `${prefix} ${amouuntInCurrency}`
 }
 
-const RightActions = ({ item }: { item: TTransaction }) => {
+const RightActions = ({
+  item,
+  closeSwipeable,
+}: {
+  item: TTransaction
+  closeSwipeable: () => void
+}) => {
   const { id } = useLocalSearchParams()
   const [budgets, setBudgets] = useBudgetsAtom()
   const currentBudgetIndex = budgets.findIndex((budget) => budget.id === id)
@@ -36,6 +43,7 @@ const RightActions = ({ item }: { item: TTransaction }) => {
       transactionIndex !== -1 &&
         draft[currentBudgetIndex].transactions.splice(transactionIndex, 1)
     })
+    closeSwipeable()
   }
 
   const handleTransactionStar = () => {
@@ -47,6 +55,7 @@ const RightActions = ({ item }: { item: TTransaction }) => {
         draft[currentBudgetIndex].transactions[transactionIndex].is_starred =
           !item.is_starred
     })
+    closeSwipeable()
   }
 
   const handleTransactionPaid = () => {
@@ -58,6 +67,7 @@ const RightActions = ({ item }: { item: TTransaction }) => {
         draft[currentBudgetIndex].transactions[transactionIndex].is_paid =
           !item.is_paid
     })
+    closeSwipeable()
   }
 
   return (
@@ -120,11 +130,16 @@ const RightActions = ({ item }: { item: TTransaction }) => {
 }
 
 const TransactionItem = ({ item }: { item: TTransaction }) => {
+  const swipeableRef = useRef<Swipeable | null>(null)
+
+  const closeSwipeable = () => swipeableRef.current?.close()
+
   return (
     <Swipeable
       renderRightActions={() => {
-        return <RightActions item={item} />
+        return <RightActions item={item} closeSwipeable={closeSwipeable} />
       }}
+      ref={swipeableRef}
     >
       <View className="bg-backgroundDimmed3 rounded-xl flex flex-row items-center">
         <View className="flex-1 p-5 flex justify-between flex-row">

@@ -8,8 +8,15 @@ import { Iconify } from 'react-native-iconify'
 import CUSTOM_COLORS from '@/constants/colors'
 import { Swipeable } from 'react-native-gesture-handler'
 import uuid from 'react-native-uuid'
+import { useRef } from 'react'
 
-const RightActions = ({ item }: { item: TBudget }) => {
+const RightActions = ({
+  item,
+  closeSwipeable,
+}: {
+  item: TBudget
+  closeSwipeable: () => void
+}) => {
   const [, setBudgets] = useBudgetsAtom()
 
   const handleCopyBudget = () => {
@@ -22,6 +29,7 @@ const RightActions = ({ item }: { item: TBudget }) => {
           id: uuid.v4() as string,
         })
     })
+    closeSwipeable()
   }
 
   const handleDeleteBudget = () => {
@@ -29,6 +37,7 @@ const RightActions = ({ item }: { item: TBudget }) => {
       const budgetIndex = draft.findIndex((budget) => budget.id === item.id)
       budgetIndex !== -1 && draft.splice(budgetIndex, 1)
     })
+    closeSwipeable()
   }
 
   return (
@@ -60,10 +69,15 @@ const RightActions = ({ item }: { item: TBudget }) => {
 }
 
 const BudgetItem = ({ item }: { item: TBudget }) => {
+  const swipeableRef = useRef<Swipeable | null>(null)
+
+  const closeSwipeable = () => swipeableRef.current?.close()
+
   return (
     <Swipeable
+      ref={swipeableRef}
       renderRightActions={() => {
-        return <RightActions item={item} />
+        return <RightActions item={item} closeSwipeable={closeSwipeable} />
       }}
     >
       <Link href={`/budgets/${item.id}`} asChild>
