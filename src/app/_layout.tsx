@@ -4,7 +4,11 @@ import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
+import { View, Text } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator'
+import migrations from '~/drizzle/migrations'
+import db from '@/db'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -20,6 +24,10 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
+  const { success: migrationSuccess, error: migrationError } = useMigrations(
+    db,
+    migrations,
+  )
   const [loaded, error] = useFonts({
     ...FontAwesome.font,
   })
@@ -37,6 +45,21 @@ export default function RootLayout() {
 
   if (!loaded) {
     return null
+  }
+
+  if (migrationError) {
+    return (
+      <View>
+        <Text>Migration error: {migrationError.message}</Text>
+      </View>
+    )
+  }
+  if (!migrationSuccess) {
+    return (
+      <View>
+        <Text>Migration is in progress...</Text>
+      </View>
+    )
   }
 
   return <RootLayoutNav />
