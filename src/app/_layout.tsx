@@ -9,6 +9,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator'
 import migrations from '~/drizzle/migrations'
 import db from '@/db'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -22,6 +23,8 @@ export const unstable_settings = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
+
+const queryClient = new QueryClient()
 
 export default function RootLayout() {
   const { success: migrationSuccess, error: migrationError } = useMigrations(
@@ -69,9 +72,11 @@ function RootLayoutNav() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
+        <QueryClientProvider client={queryClient}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+        </QueryClientProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   )

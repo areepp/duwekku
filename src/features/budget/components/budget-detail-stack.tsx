@@ -1,22 +1,22 @@
 import Container from '@/components/container'
 import CustomText from '@/components/custom-text'
-import { useBudgetsAtom } from '@/state/budget'
 import { useLocalSearchParams, useNavigation } from 'expo-router'
-import { useEffect } from 'react'
 import { View } from 'react-native'
 import AddBudgetIncomeAndExpense from './add-budget-income-and-expense'
 import BudgetTransactions from './budget-transactions'
+import { useGetBudgetById } from '../hooks/budget-query-mutation'
 
 const BudgetDetailStack = () => {
   const { id } = useLocalSearchParams()
-  const [budgets] = useBudgetsAtom()
   const navigation = useNavigation()
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: budgets.find((budget) => budget.id === id)?.name,
-    })
-  }, [])
+  useGetBudgetById(Number(id), {
+    onSuccess: (data) => {
+      navigation.setOptions({
+        headerTitle: data.name,
+      })
+    },
+  })
 
   return (
     <Container>

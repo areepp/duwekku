@@ -1,5 +1,4 @@
 import CustomText from '@/components/custom-text'
-import { TBudget, useBudgetsAtom } from '@/state/budget'
 import { FlatList, TouchableOpacity, View } from 'react-native'
 import AddBudgetSheet from './add-budget-sheet'
 import { Link } from 'expo-router'
@@ -7,8 +6,13 @@ import Container from '@/components/container'
 import { Iconify } from 'react-native-iconify'
 import CUSTOM_COLORS from '@/constants/colors'
 import { Swipeable } from 'react-native-gesture-handler'
-import uuid from 'react-native-uuid'
 import { useRef } from 'react'
+import {
+  useCreateBudget,
+  useDeleteBudget,
+  useGetAllBudgets,
+} from '../hooks/budget-query-mutation'
+import { TBudget } from '@/db/services/budget'
 
 const RightActions = ({
   item,
@@ -17,27 +21,24 @@ const RightActions = ({
   item: TBudget
   closeSwipeable: () => void
 }) => {
-  const [, setBudgets] = useBudgetsAtom()
+  const { mutate } = useCreateBudget({
+    onSuccess: () => {
+      closeSwipeable()
+    },
+  })
+
+  const { mutate: deleteBudgetMutation } = useDeleteBudget({
+    onSuccess: () => {
+      closeSwipeable()
+    },
+  })
 
   const handleCopyBudget = () => {
-    setBudgets((draft) => {
-      const budgetIndex = draft.findIndex((budget) => budget.id === item.id)
-      budgetIndex !== -1 &&
-        draft.push({
-          ...draft[budgetIndex],
-          name: draft[budgetIndex].name + ' (Copy)',
-          id: uuid.v4() as string,
-        })
-    })
-    closeSwipeable()
+    mutate(item.name + ' (Copy)')
   }
 
   const handleDeleteBudget = () => {
-    setBudgets((draft) => {
-      const budgetIndex = draft.findIndex((budget) => budget.id === item.id)
-      budgetIndex !== -1 && draft.splice(budgetIndex, 1)
-    })
-    closeSwipeable()
+    deleteBudgetMutation(item.id)
   }
 
   return (
@@ -90,13 +91,13 @@ const BudgetItem = ({ item }: { item: TBudget }) => {
 }
 
 const BudgetsTab = () => {
-  const [budgets] = useBudgetsAtom()
+  const { data } = useGetAllBudgets()
 
   return (
     <Container customClassName="relative">
       <FlatList
-        data={budgets}
-        keyExtractor={(item) => item.id}
+        data={data}
+        keyExtractor={(item) => String(item.id)}
         renderItem={({ item }) => <BudgetItem item={item} />}
         contentContainerStyle={{
           gap: 6,

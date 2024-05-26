@@ -1,0 +1,1 @@
+ALTER TABLE `transactions` ADD `budget_id` integer;

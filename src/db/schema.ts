@@ -12,6 +12,7 @@ export const budgetsRelations = relations(budgets, ({ many }) => ({
 
 export const transactions = sqliteTable('transactions', {
   id: integer('id').primaryKey(),
+  budgetId: integer('budget_id'),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(current_timestamp)`),
@@ -24,7 +25,7 @@ export const transactions = sqliteTable('transactions', {
 
 export const transactionsRelations = relations(transactions, ({ one }) => ({
   budget: one(budgets, {
-    fields: [transactions.id],
+    fields: [transactions.budgetId],
     references: [budgets.id],
   }),
 }))

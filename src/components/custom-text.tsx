@@ -10,7 +10,7 @@ export type TCustomTextVariant =
 
 type TCustomTextProps = {
   variant?: TCustomTextVariant
-  children: string | string[]
+  children: string | string[] | null
   customClassName?: string
 }
 
@@ -27,6 +27,8 @@ const CustomText = ({
   customClassName,
   variant = 'default',
 }: TCustomTextProps) => {
+  if (!children) return null
+
   return (
     <Text className={clsx(variantMapper[variant], customClassName)}>
       {children}

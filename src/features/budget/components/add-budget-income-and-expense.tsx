@@ -2,21 +2,29 @@ import Button from '@/components/button'
 import FormTextInput from '@/components/form-text-input'
 import CUSTOM_COLORS from '@/constants/colors'
 import { capitalize } from '@/lib/common'
-import { TTransaction, useBudgetsAtom } from '@/state/budget'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
 import { useLocalSearchParams } from 'expo-router'
 import { useMemo, useRef, useState } from 'react'
 import { View } from 'react-native'
-import uuid from 'react-native-uuid'
+import { useCreateTransaction } from '../hooks/budget-query-mutation'
+import { TTransaction } from '@/db/services/budget'
 
 const AddBudgetIncomeAndExpense = () => {
   const { id } = useLocalSearchParams()
   const snapPoints = useMemo(() => ['50'], [])
   const bottomSheetRef = useRef<BottomSheetModal>(null)
-  const [actionType, setActionType] = useState<TTransaction['type']>('income')
-  const [, setBudgets] = useBudgetsAtom()
+  const [actionType, setActionType] =
+    useState<NonNullable<TTransaction['type']>>('income')
   const [name, setName] = useState('')
   const [amount, setAmount] = useState('')
+
+  const { mutate } = useCreateTransaction({
+    onSuccess: () => {
+      setName('')
+      setAmount('')
+      bottomSheetRef.current?.close()
+    },
+  })
 
   return (
     <>
@@ -69,24 +77,12 @@ const AddBudgetIncomeAndExpense = () => {
           />
           <Button
             onPress={() => {
-              setBudgets((draft) => {
-                const index = draft.findIndex((item) => item.id === id)
-                if (index !== -1) {
-                  const newTransaction = {
-                    id: uuid.v4() as string,
-                    name,
-                    amount: Number(amount),
-                    created_at: new Date().toLocaleDateString(),
-                    type: actionType,
-                    is_starred: false,
-                    is_paid: false,
-                  }
-                  draft[index].transactions.push(newTransaction)
-                }
+              mutate({
+                budgetId: Number(id),
+                name,
+                amount: Number(amount),
+                type: actionType,
               })
-              setName('')
-              setAmount('')
-              bottomSheetRef.current?.close()
             }}
             text={`Create ${capitalize(actionType)}`}
           />

@@ -1,4 +1,3 @@
-import { TTransaction, useBudgetsAtom } from '@/state/budget'
 import { Iconify } from 'react-native-iconify'
 import CUSTOM_COLORS from '@/constants/colors'
 import CustomText from '@/components/custom-text'
@@ -8,6 +7,13 @@ import { Swipeable } from 'react-native-gesture-handler'
 import { TouchableOpacity } from '@gorhom/bottom-sheet'
 import clsx from 'clsx'
 import { useRef } from 'react'
+import {
+  useDeleteTransaction,
+  useEditTransaction,
+  useGetTransactionsByBudgetId,
+} from '../hooks/budget-query-mutation'
+import { TTransaction } from '@/db/services/budget'
+import { useQueryClient } from '@tanstack/react-query'
 
 const parseTransactionAmount = ({
   type,
@@ -20,7 +26,7 @@ const parseTransactionAmount = ({
   const amouuntInCurrency = new Intl.NumberFormat('id-ID', {
     style: 'currency',
     currency: 'IDR',
-  }).format(amount)
+  }).format(amount as number)
   return `${prefix} ${amouuntInCurrency}`
 }
 
@@ -31,43 +37,33 @@ const RightActions = ({
   item: TTransaction
   closeSwipeable: () => void
 }) => {
+  const queryClient = useQueryClient()
   const { id } = useLocalSearchParams()
-  const [budgets, setBudgets] = useBudgetsAtom()
-  const currentBudgetIndex = budgets.findIndex((budget) => budget.id === id)
+
+  const { mutate: editTransactionMutation } = useEditTransaction({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions', Number(id)] })
+      closeSwipeable()
+    },
+  })
+
+  const { mutate: deleteTransactionMutation } = useDeleteTransaction({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['transactions', Number(id)] })
+      closeSwipeable()
+    },
+  })
 
   const handleDeleteTransaction = () => {
-    setBudgets((draft) => {
-      const transactionIndex = draft[currentBudgetIndex].transactions.findIndex(
-        (transaction) => transaction.id === item.id,
-      )
-      transactionIndex !== -1 &&
-        draft[currentBudgetIndex].transactions.splice(transactionIndex, 1)
-    })
-    closeSwipeable()
+    deleteTransactionMutation(item.id)
   }
 
   const handleTransactionStar = () => {
-    setBudgets((draft) => {
-      const transactionIndex = draft[currentBudgetIndex].transactions.findIndex(
-        (transaction) => transaction.id === item.id,
-      )
-      if (transactionIndex !== -1)
-        draft[currentBudgetIndex].transactions[transactionIndex].is_starred =
-          !item.is_starred
-    })
-    closeSwipeable()
+    editTransactionMutation({ id: item.id, isStarred: !item.isStarred })
   }
 
   const handleTransactionPaid = () => {
-    setBudgets((draft) => {
-      const transactionIndex = draft[currentBudgetIndex].transactions.findIndex(
-        (transaction) => transaction.id === item.id,
-      )
-      if (transactionIndex !== -1)
-        draft[currentBudgetIndex].transactions[transactionIndex].is_paid =
-          !item.is_paid
-    })
-    closeSwipeable()
+    editTransactionMutation({ id: item.id, isPaid: !item.isPaid })
   }
 
   return (
@@ -77,7 +73,7 @@ const RightActions = ({
         onPress={handleTransactionPaid}
       >
         <View className="mx-auto">
-          {item.is_paid ? (
+          {item.isPaid ? (
             <Iconify
               icon="ph:check-square-bold"
               size={24}
@@ -98,7 +94,7 @@ const RightActions = ({
         onPress={handleTransactionStar}
       >
         <View className="mx-auto">
-          {item.is_starred ? (
+          {item.isStarred ? (
             <Iconify icon="mdi:star" size={24} color={CUSTOM_COLORS.accent} />
           ) : (
             <Iconify
@@ -109,7 +105,7 @@ const RightActions = ({
           )}
         </View>
         <CustomText variant="accent">
-          {item.is_starred ? 'Unstar' : 'Star'}
+          {item.isStarred ? 'Unstar' : 'Star'}
         </CustomText>
       </TouchableOpacity>
       <TouchableOpacity
@@ -144,26 +140,26 @@ const TransactionItem = ({ item }: { item: TTransaction }) => {
       <View className="bg-backgroundDimmed3 rounded-xl flex flex-row items-center">
         <View className="flex-1 p-5 flex justify-between flex-row">
           <CustomText
-            variant={item.is_paid ? 'subtle' : undefined}
-            customClassName={clsx(item.is_paid && 'line-through')}
+            variant={item.isPaid ? 'subtle' : undefined}
+            customClassName={clsx(item.isPaid && 'line-through')}
           >
             {item.name}
           </CustomText>
           <View className="flex flex-row items-center">
             <CustomText
               variant={
-                item.is_paid
+                item.isPaid
                   ? 'subtle'
                   : item.type === 'expense'
                   ? 'secondary'
                   : 'default'
               }
-              customClassName={clsx(item.is_paid && 'line-through')}
+              customClassName={clsx(item.isPaid && 'line-through')}
             >
               {parseTransactionAmount({ amount: item.amount, type: item.type })}
             </CustomText>
             <View className="ml-3">
-              {item.is_starred && (
+              {item.isStarred && (
                 <Iconify
                   icon="mdi:star"
                   size={12}
@@ -187,19 +183,14 @@ const TransactionItem = ({ item }: { item: TTransaction }) => {
 
 const BudgetTransactions = () => {
   const { id } = useLocalSearchParams()
-  const [budgets] = useBudgetsAtom()
-  const currentBudget = budgets.find((budget) => budget.id === id)
+  const { data } = useGetTransactionsByBudgetId(Number(id))
 
   return (
     <>
-      {currentBudget?.transactions && currentBudget.transactions.length > 0 && (
+      {data && data?.length > 0 && (
         <FlatList
-          data={[...currentBudget.transactions].sort(
-            (a, b) =>
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime(),
-          )}
-          keyExtractor={(item) => item.id}
+          data={data}
+          keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <TransactionItem item={item} />}
           contentContainerStyle={{
             gap: 6,

@@ -1,18 +1,22 @@
 import Button from '@/components/button'
 import FormTextInput from '@/components/form-text-input'
 import CUSTOM_COLORS from '@/constants/colors'
-import { useBudgetsAtom } from '@/state/budget'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
 import { useMemo, useRef, useState } from 'react'
 import { View, Pressable } from 'react-native'
 import { Iconify } from 'react-native-iconify'
-import uuid from 'react-native-uuid'
+import { useCreateBudget } from '../hooks/budget-query-mutation'
 
 const AddBudgetSheet = () => {
   const snapPoints = useMemo(() => ['50%'], [])
   const bottomSheetRef = useRef<BottomSheetModal>(null)
   const [newBudgetName, setNewBudgetName] = useState('')
-  const [, setBudgets] = useBudgetsAtom()
+  const { mutate } = useCreateBudget({
+    onSuccess: () => {
+      setNewBudgetName('')
+      bottomSheetRef.current?.close()
+    },
+  })
 
   return (
     <>
@@ -42,15 +46,7 @@ const AddBudgetSheet = () => {
           />
           <Button
             onPress={() => {
-              setBudgets((draft) => {
-                draft.push({
-                  id: uuid.v4() as string,
-                  name: newBudgetName,
-                  transactions: [],
-                })
-              })
-              setNewBudgetName('')
-              bottomSheetRef.current?.close()
+              mutate(newBudgetName)
             }}
             text="Create Budget"
           />
