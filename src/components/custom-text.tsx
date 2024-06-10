@@ -11,6 +11,7 @@ export type TCustomTextVariant =
 type TCustomTextProps = {
   variant?: TCustomTextVariant
   children: string | string[] | null
+  onPress?: () => void
   customClassName?: string
 }
 
@@ -25,12 +26,16 @@ const variantMapper: Record<TCustomTextVariant, string> = {
 const CustomText = ({
   children,
   customClassName,
+  onPress,
   variant = 'default',
 }: TCustomTextProps) => {
   if (!children) return null
 
   return (
-    <Text className={clsx(variantMapper[variant], customClassName)}>
+    <Text
+      className={clsx(variantMapper[variant], customClassName)}
+      onPress={onPress}
+    >
       {children}
     </Text>
   )
