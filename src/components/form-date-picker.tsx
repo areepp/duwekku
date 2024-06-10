@@ -4,16 +4,26 @@ import { View } from 'react-native'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import dayjs from 'dayjs'
 import CustomText from './custom-text'
+import { Controller, useFormContext } from 'react-hook-form'
 
-type FormDatePickerProps = {
-  customClassName?: string
+type TDatePickerValue = {
+  date: Date
+  time: Date
 }
 
-const FormDatePicker = ({ customClassName }: FormDatePickerProps) => {
+type CustomDatePickerProps = {
+  customClassName?: string
+  onChange: (props: TDatePickerValue) => void
+  value: TDatePickerValue
+}
+
+const CustomDatePicker = ({
+  customClassName,
+  value,
+  onChange,
+}: CustomDatePickerProps) => {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false)
-  const [date, setDate] = useState<Date>(new Date())
-  const [time, setTime] = useState<Date>(new Date())
 
   return (
     <View
@@ -26,34 +36,54 @@ const FormDatePicker = ({ customClassName }: FormDatePickerProps) => {
       }}
     >
       <CustomText onPress={() => setIsDatePickerOpen(!isDatePickerOpen)}>
-        {dayjs(date).format('DD/MM/YY (ddd)')}
+        {dayjs(value.date).format('DD/MM/YY (ddd)')}
       </CustomText>
       <CustomText onPress={() => setIsTimePickerOpen(!isTimePickerOpen)}>
-        {dayjs(time).format('HH:mm')}
+        {dayjs(value.time).format('HH:mm')}
       </CustomText>
 
       <DateTimePickerModal
-        date={new Date(date)}
+        date={new Date(value.date)}
         isVisible={isDatePickerOpen}
         mode="date"
         onConfirm={(date) => {
-          setDate(date)
+          onChange({ date, time: value.time })
           setIsDatePickerOpen(false)
         }}
         onCancel={() => setIsDatePickerOpen(false)}
       />
       <DateTimePickerModal
-        date={new Date(time)}
+        date={new Date(value.time)}
         isVisible={isTimePickerOpen}
         mode="time"
-        onConfirm={(date) => {
-          console.log(date)
-          setTime(date)
+        onConfirm={(newTime) => {
+          onChange({ time: newTime, date: value.date })
           setIsTimePickerOpen(false)
         }}
         onCancel={() => setIsTimePickerOpen(false)}
       />
     </View>
+  )
+}
+
+type FormDatePickerProps = Pick<CustomDatePickerProps, 'customClassName'> & {
+  name: string
+}
+
+const FormDatePicker = ({ name }: FormDatePickerProps) => {
+  const { control } = useFormContext()
+  return (
+    <Controller
+      name={name}
+      control={control}
+      defaultValue={{
+        date: new Date(),
+        time: new Date(),
+      }}
+      render={({ field: { onChange, value } }) => {
+        return <CustomDatePicker value={value} onChange={onChange} />
+      }}
+    />
   )
 }
 
