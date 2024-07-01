@@ -1,5 +1,5 @@
 import Button from '@/components/button'
-import FormTextInput from '@/components/form-text-input'
+import { CustomTextInput } from '@/components/form-text-input'
 import CUSTOM_COLORS from '@/constants/colors'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
 import { useMemo, useRef, useState } from 'react'
@@ -38,7 +38,7 @@ const AddBudgetSheet = () => {
         )}
       >
         <View className="p-6 flex" style={{ gap: 24 }}>
-          <FormTextInput
+          <CustomTextInput
             label="Budget name"
             value={newBudgetName}
             onChangeText={setNewBudgetName}

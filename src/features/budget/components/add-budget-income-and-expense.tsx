@@ -1,5 +1,5 @@
 import Button from '@/components/button'
-import FormTextInput from '@/components/form-text-input'
+import { CustomTextInput } from '@/components/form-text-input'
 import CUSTOM_COLORS from '@/constants/colors'
 import { capitalize } from '@/lib/common'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
@@ -62,13 +62,13 @@ const AddBudgetIncomeAndExpense = () => {
         )}
       >
         <View className="p-6 flex" style={{ gap: 24 }}>
-          <FormTextInput
+          <CustomTextInput
             label="Name"
             value={name}
             onChangeText={setName}
             placeholder="Enter name"
           />
-          <FormTextInput
+          <CustomTextInput
             label="Amount"
             value={amount}
             onChangeText={setAmount}
