@@ -5,9 +5,14 @@ import FormTextInput from '@/components/form-text-input'
 import { useState } from 'react'
 import { View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
+import { CATEGORIES } from '../utils/categories-constant'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const AddExpensePage = () => {
-  const [newBudgetName, setNewBudgetName] = useState('')
+  const [showCategories, setShowCategories] = useState(false)
+  const [selectedCategoryIcon, setSelectedCategoryIcon] = useState<
+    JSX.Element | undefined
+  >(undefined)
   const methods = useForm()
 
   return (
@@ -21,7 +26,7 @@ const AddExpensePage = () => {
           <CustomText customClassName="w-20">Amount</CustomText>
           <FormTextInput
             name="amount"
-            placeholder="Enter name"
+            placeholder="Enter amount"
             customClassName="flex-1"
             keyboardType="number-pad"
           />
@@ -30,40 +35,49 @@ const AddExpensePage = () => {
           <CustomText customClassName="w-20">Category</CustomText>
           <FormTextInput
             name="category"
-            value={newBudgetName}
-            onChangeText={setNewBudgetName}
-            placeholder="Enter name"
+            placeholder="Enter category"
             customClassName="flex-1"
-          />
-        </View>
-        <View className="flex flex-row items-center">
-          <CustomText customClassName="w-20">Budget</CustomText>
-          <FormTextInput
-            name="budget"
-            value={newBudgetName}
-            onChangeText={setNewBudgetName}
-            placeholder="Enter name"
-            customClassName="flex-1"
+            showSoftInputOnFocus={false}
+            onFocus={() => {
+              setShowCategories(true)
+            }}
+            onBlur={() => {
+              setShowCategories(false)
+            }}
+            icon={selectedCategoryIcon}
           />
         </View>
         <View className="flex flex-row items-center">
           <CustomText customClassName="w-20">Note</CustomText>
           <FormTextInput
             name="note"
-            value={newBudgetName}
-            onChangeText={setNewBudgetName}
-            placeholder="Enter name"
+            placeholder="Enter note"
             customClassName="flex-1"
           />
         </View>
         <Button
+          onPress={() => console.log('fdasdfasadfs', methods.getValues())}
           customClassName="mt-3"
-          onPress={() => {
-            // mutate(newBudgetName)
-          }}
           text="Create Budget"
         />
       </View>
+      {showCategories && (
+        <View className="p-6 flex flex-wrap flex-row" style={{ gap: 9 }}>
+          {CATEGORIES.map((category) => (
+            <TouchableOpacity
+              key={category.name}
+              onPress={() => {
+                methods.setValue('category', category.name)
+                setSelectedCategoryIcon(category.icon)
+              }}
+              className="flex flex-row items-center bg-backgroundDimmed3 rounded-full px-3 py-2"
+            >
+              {category.icon}
+              <CustomText customClassName="ml-1">{category.name}</CustomText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
     </FormProvider>
   )
 }
