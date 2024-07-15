@@ -1,6 +1,17 @@
 import { Iconify } from 'react-native-iconify'
 
-export const CATEGORIES = [
+export type TCategory =
+  | 'Food'
+  | 'Social Life'
+  | 'Transport'
+  | 'Household'
+  | 'Daily Needs'
+  | 'Apparel'
+  | 'Health'
+  | 'Education'
+  | 'Gift'
+
+export const CATEGORIES: Array<{ name: TCategory; icon: JSX.Element }> = [
   {
     name: 'Food',
     icon: <Iconify icon="ph:bowl-food" size={24} color="white" />,

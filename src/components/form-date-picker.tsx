@@ -6,7 +6,7 @@ import dayjs from 'dayjs'
 import CustomText from './custom-text'
 import { Controller, useFormContext } from 'react-hook-form'
 
-type TDatePickerValue = {
+export type TDatePickerValue = {
   date: Date
   time: Date
 }
