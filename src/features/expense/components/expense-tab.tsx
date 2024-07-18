@@ -3,9 +3,12 @@ import { Iconify } from 'react-native-iconify'
 import { Pressable } from 'react-native'
 import { Link } from 'expo-router'
 import CUSTOM_COLORS from '@/constants/colors'
+import { useGetAllExpenses } from '../hooks/query-hooks'
 
 const ExpenseTab = () => {
-  // const { data } = useGetAllBudgets()
+  const { data } = useGetAllExpenses()
+
+  console.log('ooooooooooo', data)
 
   return (
     <Container customClassName="relative">
