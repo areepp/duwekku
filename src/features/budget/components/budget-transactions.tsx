@@ -14,6 +14,7 @@ import {
 } from '../hooks/budget-query-mutation'
 import { TTransaction } from '@/db/services/budget'
 import { useQueryClient } from '@tanstack/react-query'
+import { parseCurrency } from '@/lib/common'
 
 const parseTransactionAmount = ({
   type,
@@ -23,10 +24,7 @@ const parseTransactionAmount = ({
   amount: TTransaction['amount']
 }) => {
   const prefix = type === 'expense' ? '-' : '+'
-  const amouuntInCurrency = new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-  }).format(amount as number)
+  const amouuntInCurrency = parseCurrency(amount as number)
   return `${prefix} ${amouuntInCurrency}`
 }
 

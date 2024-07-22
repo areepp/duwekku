@@ -55,10 +55,21 @@ export const useDeleteBudget = (options?: TQueryOptions) => {
   })
 }
 
-export const useGetTransactionsByBudgetId = (id: number) => {
+export const useGetTransactionsByBudgetId = (
+  id: number,
+  options?: {
+    onSuccess: (
+      data: Awaited<ReturnType<typeof getTransactionsByBudgetId>>,
+    ) => void
+  },
+) => {
   return useQuery({
     queryKey: ['transactions', id],
-    queryFn: () => getTransactionsByBudgetId(id),
+    queryFn: async () => {
+      const data = await getTransactionsByBudgetId(id)
+      options?.onSuccess(data)
+      return data
+    },
   })
 }
 
