@@ -21,11 +21,13 @@ const ExpenseLayout = () => {
       <Stack.Screen
         name="index"
         options={{
-          headerShown: true,
-          headerTitle: 'Budgets',
+          headerShown: false,
         }}
       />
-      <Stack.Screen name="add" options={{ headerTitleAlign: 'center' }} />
+      <Stack.Screen
+        name="add"
+        options={{ headerTitleAlign: 'center', headerTitle: 'Add Expense' }}
+      />
     </Stack>
   )
 }
