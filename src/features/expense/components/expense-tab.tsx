@@ -9,6 +9,7 @@ import { TExpense } from '@/db/services/expenses'
 import { format } from 'date-fns'
 import { parseCurrency } from '@/lib/common'
 import Badge from '@/components/badge'
+import { CategoryIcon } from './expense-category-options'
 
 const ExpensesList = () => {
   const { data } = useGetAllExpenses()
@@ -75,9 +76,20 @@ const ExpensesList = () => {
               keyExtractor={(_item) => _item.id.toString()}
               renderItem={({ item: expenseItem }) => (
                 <View className="border-b border-accentDimmed3 flex justify-between flex-row px-6 py-3">
-                  <CustomText>{expenseItem.categoryId?.toString()}</CustomText>
-                  <CustomText>{expenseItem.note}</CustomText>
-                  <CustomText variant="secondary">
+                  <View
+                    className="flex flex-row items-center flex-1"
+                    style={{ gap: 3 }}
+                  >
+                    {CategoryIcon[expenseItem.category?.name as string]}
+                    <CustomText>{expenseItem.category?.name}</CustomText>
+                  </View>
+                  <CustomText customClassName="flex-1">
+                    {expenseItem.note}
+                  </CustomText>
+                  <CustomText
+                    customClassName="flex-1 text-center"
+                    variant="secondary"
+                  >
                     {parseCurrency(totalExpenseInADay)}
                   </CustomText>
                 </View>

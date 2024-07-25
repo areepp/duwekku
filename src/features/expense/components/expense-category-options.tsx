@@ -6,7 +6,7 @@ import { Iconify } from 'react-native-iconify'
 import { TCreateExpenseForm } from './add-expense-page'
 import { useGetAllCategories } from '../hooks/query-hooks'
 
-const CategoryIcon: Record<string, JSX.Element> = {
+export const CategoryIcon: Record<string, JSX.Element> = {
   Food: <Iconify icon="ph:bowl-food" size={24} color="white" />,
   'Social Life': <Iconify icon="formkit:people" size={24} color="white" />,
   Transport: <Iconify icon="ph:train" size={24} color="white" />,

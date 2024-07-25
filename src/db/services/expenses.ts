@@ -2,10 +2,14 @@ import { InferSelectModel } from 'drizzle-orm'
 import db from '..'
 import { categories, expenses } from '../schema'
 
+type TCategory = InferSelectModel<typeof categories>
+
 export const createCategories = async (names: Array<{ name: string }>) =>
   db.insert(categories).values(names)
 
-export type TExpense = InferSelectModel<typeof expenses>
+export type TExpense = InferSelectModel<typeof expenses> & {
+  category: TCategory | null
+}
 
 export const getAllCategories = async () => db.select().from(categories)
 
@@ -24,4 +28,5 @@ export const createExpense = async ({
 }: TCreateExpensePayload) =>
   db.insert(expenses).values({ amount, categoryId, date, note })
 
-export const getAllExpenses = () => db.select().from(expenses)
+export const getAllExpenses = () =>
+  db.query.expenses.findMany({ with: { category: true } })
