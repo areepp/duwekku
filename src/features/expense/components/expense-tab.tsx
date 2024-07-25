@@ -1,26 +1,92 @@
-import Container from '@/components/container'
 import { Iconify } from 'react-native-iconify'
-import { Pressable, View } from 'react-native'
+import { FlatList, Pressable, View } from 'react-native'
 import { Link } from 'expo-router'
 import CUSTOM_COLORS from '@/constants/colors'
 import { useGetAllExpenses } from '../hooks/query-hooks'
 import CustomText from '@/components/custom-text'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { TExpense } from '@/db/services/expenses'
+import { format } from 'date-fns'
+import { parseCurrency } from '@/lib/common'
+import Badge from '@/components/badge'
 
 const ExpensesList = () => {
   const { data } = useGetAllExpenses()
 
+  if (data?.length === 0 || !data)
+    return (
+      <View className="w-full h-full flex justify-center items-center">
+        <Iconify
+          icon="ph:money-wavy-light"
+          size={128}
+          color={CUSTOM_COLORS.secondary}
+        />
+        <CustomText customClassName="text-xl" variant="secondary">
+          No data available.
+        </CustomText>
+      </View>
+    )
+
+  const expensesByDate: Record<string, TExpense[]> = data?.reduce(
+    (groups, expense) => {
+      const date = expense.date.split('T')[0]
+      if (!groups[date]) groups[date] = []
+      groups[date].push(expense)
+      return groups
+    },
+    {} as Record<string, TExpense[]>,
+  )
+
+  const parsedExpensesArray = Object.entries(expensesByDate).map(
+    ([date, expenses]) => ({ date, expenses }),
+  )
+
   return (
-    <View className="w-full h-full flex justify-center items-center">
-      <Iconify
-        icon="ph:money-wavy-light"
-        size={128}
-        color={CUSTOM_COLORS.secondary}
-      />
-      <CustomText customClassName="text-xl" variant="secondary">
-        No data available.
-      </CustomText>
-    </View>
+    <FlatList
+      data={parsedExpensesArray}
+      keyExtractor={(item) => item.date}
+      contentContainerStyle={{ gap: 12 }}
+      renderItem={({ item }) => {
+        const date = new Date(item.date)
+        const totalExpenseInADay = item.expenses.reduce(
+          (total, expense) => total + expense.amount,
+          0,
+        )
+        return (
+          <View className="bg-backgroundDimmed3">
+            <View
+              className="flex flex-row items-center p-3 border-b border-accentDimmed3"
+              style={{ gap: 9 }}
+            >
+              <CustomText customClassName="font-bold text-lg">
+                {format(date, 'dd')}
+              </CustomText>
+              <Badge>
+                <CustomText customClassName="text-xs">
+                  {format(date, 'eee')}
+                </CustomText>
+              </Badge>
+              <CustomText variant="secondary">
+                {parseCurrency(totalExpenseInADay)}
+              </CustomText>
+            </View>
+            <FlatList
+              data={item.expenses}
+              keyExtractor={(_item) => _item.id.toString()}
+              renderItem={({ item: expenseItem }) => (
+                <View className="border-b border-accentDimmed3 flex justify-between flex-row px-6 py-3">
+                  <CustomText>{expenseItem.categoryId?.toString()}</CustomText>
+                  <CustomText>{expenseItem.note}</CustomText>
+                  <CustomText variant="secondary">
+                    {parseCurrency(totalExpenseInADay)}
+                  </CustomText>
+                </View>
+              )}
+            />
+          </View>
+        )
+      }}
+    />
   )
 }
 
@@ -47,7 +113,7 @@ const ExpenseTab = () => {
           color={CUSTOM_COLORS.accent}
         />
       </View>
-      <View className="flex flex-row border-t border-b border-secondary bg-backgroundDimmed3">
+      <View className="flex flex-row border-t border-b border-accentDimmed3 bg-backgroundDimmed3">
         <View className="flex-grow py-3">
           <CustomText variant="accent" customClassName="text-center">
             Daily

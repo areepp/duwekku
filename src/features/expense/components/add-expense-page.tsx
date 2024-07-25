@@ -78,7 +78,7 @@ const AddExpensePage = () => {
         <Button
           onPress={onSubmit}
           customClassName="mt-3"
-          text="Create Budget"
+          text="Create Expense"
         />
       </View>
       {showCategories && (

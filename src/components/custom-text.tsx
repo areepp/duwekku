@@ -10,7 +10,7 @@ export type TCustomTextVariant =
 
 type TCustomTextProps = {
   variant?: TCustomTextVariant
-  children: string | string[] | null
+  children: string | string[] | null | undefined
   onPress?: () => void
   customClassName?: string
 }

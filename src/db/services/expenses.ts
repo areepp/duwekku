@@ -1,8 +1,11 @@
+import { InferSelectModel } from 'drizzle-orm'
 import db from '..'
 import { categories, expenses } from '../schema'
 
 export const createCategories = async (names: Array<{ name: string }>) =>
   db.insert(categories).values(names)
+
+export type TExpense = InferSelectModel<typeof expenses>
 
 export const getAllCategories = async () => db.select().from(categories)
 
