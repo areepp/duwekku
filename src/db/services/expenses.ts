@@ -1,4 +1,4 @@
-import { InferSelectModel } from 'drizzle-orm'
+import { InferSelectModel, sql } from 'drizzle-orm'
 import db from '..'
 import { categories, expenses } from '../schema'
 
@@ -29,4 +29,7 @@ export const createExpense = async ({
   db.insert(expenses).values({ amount, categoryId, date, note })
 
 export const getAllExpenses = () =>
-  db.query.expenses.findMany({ with: { category: true } })
+  db.query.expenses.findMany({
+    where: sql`strftime('%Y-%m', date) = '2024-07'`,
+    with: { category: true },
+  })
