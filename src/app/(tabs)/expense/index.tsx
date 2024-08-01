@@ -1,5 +1,5 @@
-import { ExpenseTab } from '@/features/expense'
+import { ExpensePage } from '@/features/expense'
 
 export default function TabTwoScreen() {
-  return <ExpenseTab />
+  return <ExpensePage />
 }
