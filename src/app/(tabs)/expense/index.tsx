@@ -1,5 +1,10 @@
-import { ExpensePage } from '@/features/expense'
+import { Redirect } from 'expo-router'
 
-export default function TabTwoScreen() {
-  return <ExpensePage />
+const Page = () => {
+  const date = new Date()
+  return (
+    <Redirect href={`/expense/${date.getFullYear()}-${date.getMonth() + 1}`} />
+  )
 }
+
+export default Page

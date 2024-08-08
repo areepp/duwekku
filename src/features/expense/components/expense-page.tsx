@@ -1,6 +1,6 @@
 import { Iconify } from 'react-native-iconify'
 import { FlatList, Pressable, View } from 'react-native'
-import { Link } from 'expo-router'
+import { Link, useLocalSearchParams } from 'expo-router'
 import CUSTOM_COLORS from '@/constants/colors'
 import { useGetAllExpenses } from '../hooks/query-hooks'
 import CustomText from '@/components/custom-text'
@@ -104,6 +104,8 @@ const ExpensesList = () => {
 
 const ExpenseTab = () => {
   const insets = useSafeAreaInsets()
+  const { date_in_view } = useLocalSearchParams()
+  const activeDate = new Date(date_in_view as string)
 
   return (
     <View className="flex h-full">
@@ -117,7 +119,7 @@ const ExpenseTab = () => {
           color={CUSTOM_COLORS.accent}
         />
         <CustomText variant="default" customClassName="text-lg font-bold">
-          March 2024
+          {format(activeDate, 'MMMM yyyy')}
         </CustomText>
         <Iconify
           icon="ic:round-chevron-right"

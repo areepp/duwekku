@@ -28,6 +28,12 @@ const ExpenseLayout = () => {
         name="add"
         options={{ headerTitleAlign: 'center', headerTitle: 'Add Expense' }}
       />
+      <Stack.Screen
+        name="[date_in_view]"
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   )
 }
