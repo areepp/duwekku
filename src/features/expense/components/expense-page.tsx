@@ -10,6 +10,7 @@ import { addMonths, format, subMonths } from 'date-fns'
 import { parseCurrency } from '@/lib/common'
 import Badge from '@/components/badge'
 import { CategoryIcon } from './expense-category-options'
+import clsx from 'clsx'
 
 const ExpensesList = () => {
   const { date_in_view } = useLocalSearchParams()
@@ -84,14 +85,19 @@ const ExpensesList = () => {
                     {CategoryIcon[expenseItem.category?.name as string]}
                     <CustomText>{expenseItem.category?.name}</CustomText>
                   </View>
-                  <CustomText customClassName="flex-1">
-                    {expenseItem.note}
+                  <CustomText
+                    customClassName={clsx(
+                      'flex-1',
+                      !expenseItem.note && 'text-transparent',
+                    )}
+                  >
+                    {expenseItem.note ?? 'invisible text'}
                   </CustomText>
                   <CustomText
                     customClassName="flex-1 text-center"
                     variant="secondary"
                   >
-                    {parseCurrency(totalExpenseInADay)}
+                    {parseCurrency(expenseItem.amount)}
                   </CustomText>
                 </View>
               )}

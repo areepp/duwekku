@@ -12,9 +12,14 @@ export const useGetAllCategories = () =>
     queryFn: getAllCategories,
   })
 
-export const useCreateExpense = () =>
+export const useCreateExpense = ({
+  options,
+}: {
+  options?: { onSuccess?: () => void }
+}) =>
   useMutation({
     mutationFn: (payload: TCreateExpensePayload) => createExpense(payload),
+    ...options,
   })
 
 export const useGetAllExpenses = (date: string) =>

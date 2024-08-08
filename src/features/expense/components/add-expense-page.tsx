@@ -7,6 +7,8 @@ import { View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import ExpenseCategoryOptions from './expense-category-options'
 import { useCreateExpense } from '../hooks/query-hooks'
+import { QueryClient } from '@tanstack/react-query'
+import { format } from 'date-fns'
 
 export type TCreateExpenseForm = {
   amount: string
@@ -19,12 +21,27 @@ export type TCreateExpenseForm = {
 }
 
 const AddExpensePage = () => {
+  const queryClient = new QueryClient()
   const [showCategories, setShowCategories] = useState(false)
   const [selectedCategoryIcon, setSelectedCategoryIcon] = useState<
     JSX.Element | undefined
   >(undefined)
   const methods = useForm<TCreateExpenseForm>()
-  const { mutate } = useCreateExpense()
+  const { mutate } = useCreateExpense({
+    options: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [
+            'expenses',
+            format(methods.getValues('transaction_date.date'), 'yyyy-MM'),
+          ],
+        })
+        methods.reset()
+        setSelectedCategoryIcon(undefined)
+        setShowCategories(false)
+      },
+    },
+  })
 
   const onSubmit = methods.handleSubmit((data) => {
     mutate({
