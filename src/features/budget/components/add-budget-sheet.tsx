@@ -3,7 +3,7 @@ import { CustomTextInput } from '@/components/form-text-input'
 import CUSTOM_COLORS from '@/constants/colors'
 import { BottomSheetBackdrop, BottomSheetModal } from '@gorhom/bottom-sheet'
 import { useMemo, useRef, useState } from 'react'
-import { View, Pressable } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 import { Iconify } from 'react-native-iconify'
 import { useCreateBudget } from '../hooks/budget-query-mutation'
 
@@ -20,12 +20,12 @@ const AddBudgetSheet = () => {
 
   return (
     <>
-      <Pressable
+      <TouchableOpacity
         onPress={() => bottomSheetRef.current?.present()}
         className="bg-backgroundDimmed3 rounded-full absolute right-3 bottom-3 border border-accent w-16 h-16 flex items-center justify-center"
       >
         <Iconify icon="iconoir:plus" size={32} color={CUSTOM_COLORS.accent} />
-      </Pressable>
+      </TouchableOpacity>
       <BottomSheetModal
         ref={bottomSheetRef}
         index={0}

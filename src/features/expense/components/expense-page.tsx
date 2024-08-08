@@ -1,18 +1,19 @@
 import { Iconify } from 'react-native-iconify'
-import { FlatList, Pressable, View } from 'react-native'
-import { Link, useLocalSearchParams } from 'expo-router'
+import { FlatList, TouchableOpacity, View } from 'react-native'
+import { Link, useLocalSearchParams, useRouter } from 'expo-router'
 import CUSTOM_COLORS from '@/constants/colors'
 import { useGetAllExpenses } from '../hooks/query-hooks'
 import CustomText from '@/components/custom-text'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TExpense } from '@/db/services/expenses'
-import { format } from 'date-fns'
+import { addMonths, format, subMonths } from 'date-fns'
 import { parseCurrency } from '@/lib/common'
 import Badge from '@/components/badge'
 import { CategoryIcon } from './expense-category-options'
 
 const ExpensesList = () => {
-  const { data } = useGetAllExpenses()
+  const { date_in_view } = useLocalSearchParams()
+  const { data } = useGetAllExpenses(date_in_view as string)
 
   if (data?.length === 0 || !data)
     return (
@@ -103,9 +104,17 @@ const ExpensesList = () => {
 }
 
 const ExpenseTab = () => {
+  const router = useRouter()
   const insets = useSafeAreaInsets()
   const { date_in_view } = useLocalSearchParams()
   const activeDate = new Date(date_in_view as string)
+
+  const handleChangeMonth = (target: 'next' | 'previous') => {
+    const targetDate =
+      target === 'next' ? addMonths(activeDate, 1) : subMonths(activeDate, 1)
+
+    router.push(`/expense/${format(targetDate, 'yyyy-MM')}`)
+  }
 
   return (
     <View className="flex h-full">
@@ -113,19 +122,23 @@ const ExpenseTab = () => {
         className="flex flex-row items-center px-3 pb-6 bg-backgroundDimmed3"
         style={{ gap: 6, paddingTop: insets.top }}
       >
-        <Iconify
-          icon="ic:round-chevron-left"
-          size={24}
-          color={CUSTOM_COLORS.accent}
-        />
+        <TouchableOpacity onPress={() => handleChangeMonth('previous')}>
+          <Iconify
+            icon="ic:round-chevron-left"
+            size={24}
+            color={CUSTOM_COLORS.accent}
+          />
+        </TouchableOpacity>
         <CustomText variant="default" customClassName="text-lg font-bold">
           {format(activeDate, 'MMMM yyyy')}
         </CustomText>
-        <Iconify
-          icon="ic:round-chevron-right"
-          size={24}
-          color={CUSTOM_COLORS.accent}
-        />
+        <TouchableOpacity onPress={() => handleChangeMonth('next')}>
+          <Iconify
+            icon="ic:round-chevron-right"
+            size={24}
+            color={CUSTOM_COLORS.accent}
+          />
+        </TouchableOpacity>
       </View>
       <View className="flex flex-row border-t border-b border-accentDimmed3 bg-backgroundDimmed3">
         <View className="flex-grow py-3">
@@ -142,13 +155,13 @@ const ExpenseTab = () => {
       <View className="relative w-full flex-1">
         <ExpensesList />
         <Link href="/(tabs)/expense/add" asChild>
-          <Pressable className="bg-backgroundDimmed3 rounded-full absolute right-3 bottom-3 border border-accent w-16 h-16 flex items-center justify-center">
+          <TouchableOpacity className="bg-backgroundDimmed3 rounded-full absolute right-3 bottom-3 border border-accent w-16 h-16 flex items-center justify-center">
             <Iconify
               icon="iconoir:plus"
               size={32}
               color={CUSTOM_COLORS.accent}
             />
-          </Pressable>
+          </TouchableOpacity>
         </Link>
       </View>
     </View>

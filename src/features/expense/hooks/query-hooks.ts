@@ -17,5 +17,8 @@ export const useCreateExpense = () =>
     mutationFn: (payload: TCreateExpensePayload) => createExpense(payload),
   })
 
-export const useGetAllExpenses = () =>
-  useQuery({ queryKey: ['expenses'], queryFn: getAllExpenses })
+export const useGetAllExpenses = (date: string) =>
+  useQuery({
+    queryKey: ['expenses', date],
+    queryFn: () => getAllExpenses(date),
+  })

@@ -28,8 +28,9 @@ export const createExpense = async ({
 }: TCreateExpensePayload) =>
   db.insert(expenses).values({ amount, categoryId, date, note })
 
-export const getAllExpenses = () =>
+// date format is: year-month. Example: '2024-07'
+export const getAllExpenses = (date: string) =>
   db.query.expenses.findMany({
-    where: sql`strftime('%Y-%m', date) = '2024-07'`,
+    where: sql`strftime('%Y-%m', date) = ${date}`,
     with: { category: true },
   })
