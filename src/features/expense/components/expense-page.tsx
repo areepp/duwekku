@@ -11,6 +11,7 @@ import { parseCurrency } from '@/lib/common'
 import Badge from '@/components/badge'
 import { CategoryIcon } from './expense-category-options'
 import clsx from 'clsx'
+import { useState } from 'react'
 
 const ExpensesList = () => {
   const { date_in_view } = useLocalSearchParams()
@@ -114,6 +115,7 @@ const ExpenseTab = () => {
   const insets = useSafeAreaInsets()
   const { date_in_view } = useLocalSearchParams()
   const activeDate = new Date(date_in_view as string)
+  const [activeTab, setActiveTab] = useState<'daily' | 'analytic'>('daily')
 
   const handleChangeMonth = (target: 'next' | 'previous') => {
     const targetDate =
@@ -146,29 +148,49 @@ const ExpenseTab = () => {
           />
         </TouchableOpacity>
       </View>
-      <View className="flex flex-row border-t border-b border-accentDimmed3 bg-backgroundDimmed3">
-        <View className="flex-grow py-3">
+      <View className="flex flex-row bg-backgroundDimmed3">
+        <TouchableOpacity
+          onPress={() => setActiveTab('daily')}
+          className={clsx(
+            'flex-grow py-3',
+            activeTab === 'daily' && 'border-b-2 border-accentDimmed3',
+          )}
+        >
           <CustomText variant="accent" customClassName="text-center">
             Daily
           </CustomText>
-        </View>
-        <View className="flex-grow py-3 bg-background">
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setActiveTab('analytic')}
+          className={clsx(
+            'flex-grow py-3 ',
+            activeTab === 'analytic' && 'border-b-2 border-accentDimmed3',
+          )}
+        >
           <CustomText variant="accent" customClassName="text-center">
             Analytic
           </CustomText>
-        </View>
+        </TouchableOpacity>
       </View>
       <View className="relative w-full flex-1">
-        <ExpensesList />
-        <Link href="/(tabs)/expense/add" asChild>
-          <TouchableOpacity className="bg-backgroundDimmed3 rounded-full absolute right-3 bottom-3 border border-accent w-16 h-16 flex items-center justify-center">
-            <Iconify
-              icon="iconoir:plus"
-              size={32}
-              color={CUSTOM_COLORS.accent}
-            />
-          </TouchableOpacity>
-        </Link>
+        {activeTab === 'daily' ? (
+          <>
+            <ExpensesList />
+            <Link href="/(tabs)/expense/add" asChild>
+              <TouchableOpacity className="bg-backgroundDimmed3 rounded-full absolute right-3 bottom-3 border border-accent w-16 h-16 flex items-center justify-center">
+                <Iconify
+                  icon="iconoir:plus"
+                  size={32}
+                  color={CUSTOM_COLORS.accent}
+                />
+              </TouchableOpacity>
+            </Link>
+          </>
+        ) : (
+          <View>
+            <CustomText>Analytic</CustomText>
+          </View>
+        )}
       </View>
     </View>
   )
