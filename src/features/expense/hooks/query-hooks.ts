@@ -1,7 +1,8 @@
 import {
   createExpense,
   getAllCategories,
-  getAllExpenses,
+  getAllExpensesByCategory,
+  getAllExpensesByDate,
   TCreateExpensePayload,
 } from '@/db/services/expenses'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -22,8 +23,14 @@ export const useCreateExpense = ({
     ...options,
   })
 
-export const useGetAllExpenses = (date: string) =>
+export const useGetAllExpensesByDate = (date: string) =>
   useQuery({
     queryKey: ['expenses', date],
-    queryFn: () => getAllExpenses(date),
+    queryFn: () => getAllExpensesByDate(date),
+  })
+
+export const useGetAllExpensesByCategory = (date: string) =>
+  useQuery({
+    queryKey: ['expense-analytic', date],
+    queryFn: () => getAllExpensesByCategory(date),
   })
