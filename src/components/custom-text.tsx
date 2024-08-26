@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Text } from 'react-native'
+import { StyleProp, Text, TextStyle } from 'react-native'
 
 export type TCustomTextVariant =
   | 'default'
@@ -13,6 +13,7 @@ type TCustomTextProps = {
   children: string | string[] | null | undefined
   onPress?: () => void
   customClassName?: string
+  style?: StyleProp<TextStyle>
 }
 
 const variantMapper: Record<TCustomTextVariant, string> = {
@@ -28,6 +29,7 @@ const CustomText = ({
   customClassName,
   onPress,
   variant = 'default',
+  style,
 }: TCustomTextProps) => {
   if (!children) return null
 
@@ -35,6 +37,7 @@ const CustomText = ({
     <Text
       className={clsx(variantMapper[variant], customClassName)}
       onPress={onPress}
+      style={style}
     >
       {children}
     </Text>
