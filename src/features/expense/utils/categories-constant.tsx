@@ -30,7 +30,7 @@ export const CATEGORY_COLOR: Record<string, string> = {
   'Social Life': '#33b1ff',
   Transport: '#007d79',
   Household: '#ff7eb6',
-  'Daily Needs': '#fa4d56',
+  'Daily Needs': '#8a3800',
   Apparel: '#fff1f1',
   Health: '#6fdc8c',
   Education: '#d2a106',

@@ -79,7 +79,7 @@ export const getAllExpensesByCategory = async (date: string) => {
       category,
       expenses,
       total,
-      percentage: `${((total / totalExpensesThisMonth) * 100).toFixed(1)}%`,
+      percentage: Number(((total / totalExpensesThisMonth) * 100).toFixed(1)),
       perecentageRounded: `${Math.round(
         (total / totalExpensesThisMonth) * 100,
       )}%`,
