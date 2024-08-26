@@ -56,18 +56,35 @@ export const getAllExpensesByCategory = async (date: string) => {
     where: sql`strftime('%Y-%m', date) = ${date}`,
     with: { category: true },
   })
-  const expensesByDate: Record<string, TExpense[]> = rawData?.reduce(
-    (groups, expense) => {
-      const date = expense.date.split('T')[0]
-      if (!groups[date]) groups[date] = []
-      groups[date].push(expense)
-      return groups
-    },
-    {} as Record<string, TExpense[]>,
+  const expensesByCategory: Record<
+    string,
+    { expenses: TExpense[]; total: number }
+  > = {}
+
+  let totalExpensesThisMonth = 0
+
+  for (const expense of rawData) {
+    const category = expense.category?.name as string
+    if (!expensesByCategory[category]) {
+      expensesByCategory[category] = { expenses: [], total: 0 }
+    }
+
+    expensesByCategory[category].expenses.push(expense)
+    expensesByCategory[category].total += expense.amount
+    totalExpensesThisMonth += expense.amount
+  }
+
+  const parsedExpensesData = Object.entries(expensesByCategory).map(
+    ([category, { expenses, total }]) => ({
+      category,
+      expenses,
+      total,
+      percentage: `${((total / totalExpensesThisMonth) * 100).toFixed(1)}%`,
+      perecentageRounded: `${Math.round(
+        (total / totalExpensesThisMonth) * 100,
+      )}%`,
+    }),
   )
 
-  return Object.entries(expensesByDate).map(([date, expenses]) => ({
-    date,
-    expenses,
-  }))
+  return parsedExpensesData
 }

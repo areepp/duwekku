@@ -1,7 +1,7 @@
 import { FlatList, View } from 'react-native'
 import { parseCurrency } from '@/lib/common'
 import Badge from '@/components/badge'
-import { CategoryIcon } from './expense-category-options'
+import { CategoryIcon } from '../utils/categories-constant'
 import { useGetAllExpensesByDate } from '../hooks/query-hooks'
 import { useLocalSearchParams } from 'expo-router'
 import { Iconify } from 'react-native-iconify'

@@ -5,20 +5,7 @@ import { useFormContext } from 'react-hook-form'
 import { Iconify } from 'react-native-iconify'
 import { TCreateExpenseForm } from './add-expense-page'
 import { useGetAllCategories } from '../hooks/query-hooks'
-
-export const CategoryIcon: Record<string, JSX.Element> = {
-  Food: <Iconify icon="ph:bowl-food" size={24} color="white" />,
-  'Social Life': <Iconify icon="formkit:people" size={24} color="white" />,
-  Transport: <Iconify icon="ph:train" size={24} color="white" />,
-  Household: <Iconify icon="ph:house" size={24} color="white" />,
-  'Daily Needs': (
-    <Iconify icon="ph:shopping-cart-simple" size={24} color="white" />
-  ),
-  Apparel: <Iconify icon="ph:coat-hanger" size={24} color="white" />,
-  Health: <Iconify icon="solar:health-linear" size={24} color="white" />,
-  Education: <Iconify icon="ph:student" size={24} color="white" />,
-  Gift: <Iconify icon="ph:gift" size={24} color="white" />,
-}
+import { CategoryIcon } from '../utils/categories-constant'
 
 type Props = {
   setSelectedCategoryIcon: React.Dispatch<

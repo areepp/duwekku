@@ -54,7 +54,8 @@ const ExpenseTab = () => {
           onPress={() => setActiveTab('daily')}
           className={clsx(
             'flex-grow py-3',
-            activeTab === 'daily' && 'border-b-2 border-accentDimmed3',
+            activeTab === 'daily' &&
+              'border-b-2 border-accentDimmed3 font-bold',
           )}
         >
           <CustomText variant="accent" customClassName="text-center">
@@ -65,7 +66,8 @@ const ExpenseTab = () => {
           onPress={() => setActiveTab('analytic')}
           className={clsx(
             'flex-grow py-3 ',
-            activeTab === 'analytic' && 'border-b-2 border-accentDimmed3',
+            activeTab === 'analytic' &&
+              'border-b-2 border-accentDimmed3 font-bold',
           )}
         >
           <CustomText variant="accent" customClassName="text-center">
