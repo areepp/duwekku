@@ -1,4 +1,4 @@
-import { InferSelectModel, sql } from 'drizzle-orm'
+import { desc, InferSelectModel, sql } from 'drizzle-orm'
 import db from '..'
 import { categories, expenses } from '../schema'
 
@@ -33,7 +33,9 @@ export const getAllExpensesByDate = async (date: string) => {
   const rawData = await db.query.expenses.findMany({
     where: sql`strftime('%Y-%m', date) = ${date}`,
     with: { category: true },
+    orderBy: [desc(expenses.date)],
   })
+
   const expensesByDate: Record<string, TExpense[]> = rawData?.reduce(
     (groups, expense) => {
       const date = expense.date.split('T')[0]

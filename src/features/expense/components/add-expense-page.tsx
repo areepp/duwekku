@@ -7,7 +7,7 @@ import { View } from 'react-native'
 import { FormProvider, useForm } from 'react-hook-form'
 import ExpenseCategoryOptions from './expense-category-options'
 import { useCreateExpense } from '../hooks/query-hooks'
-import { QueryClient } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
 
 export type TCreateExpenseForm = {
@@ -21,7 +21,7 @@ export type TCreateExpenseForm = {
 }
 
 const AddExpensePage = () => {
-  const queryClient = new QueryClient()
+  const queryClient = useQueryClient()
   const [showCategories, setShowCategories] = useState(false)
   const [selectedCategoryIcon, setSelectedCategoryIcon] = useState<
     JSX.Element | undefined
