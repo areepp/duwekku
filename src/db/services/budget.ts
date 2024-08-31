@@ -17,8 +17,28 @@ export const createBudget = async (name: string) =>
 export const deleteBudget = async (id: number) =>
   db.delete(budgets).where(eq(budgets.id, id))
 
-export const getTransactionsByBudgetId = async (id: number) =>
-  db.select().from(transactions).where(eq(transactions.budgetId, id))
+export const getTransactionsByBudgetId = async (id: number) => {
+  const transactionsData = await db
+    .select()
+    .from(transactions)
+    .where(eq(transactions.budgetId, id))
+  const _total = transactionsData.reduce(
+    (totals, item) => {
+      if (item.type === 'income') {
+        totals.income += item.amount as number
+      } else if (item.type === 'expense') {
+        totals.expenses += item.amount as number
+      }
+      return totals
+    },
+    { income: 0, expenses: 0 },
+  )
+
+  return {
+    transactions: transactionsData,
+    total: _total,
+  }
+}
 
 export const createTransaction = async ({
   budgetId,

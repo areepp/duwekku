@@ -185,9 +185,9 @@ const BudgetTransactions = () => {
 
   return (
     <>
-      {data && data?.length > 0 && (
+      {data?.transactions && data?.transactions.length > 0 && (
         <FlatList
-          data={data}
+          data={data.transactions}
           keyExtractor={(item) => String(item.id)}
           renderItem={({ item }) => <TransactionItem item={item} />}
           contentContainerStyle={{
